@@ -10,6 +10,10 @@ import { sequelize } from "./config/db";
 
 import authRoutes from "./routes/authRoutes";
 
+// protected routes
+import { authenticate } from "./middlewares/authMiddleware";
+import { authorizeRoles } from "./middlewares/roleMiddleware";
+
 dotenv.config();
 
 const app = express();
@@ -56,6 +60,16 @@ sequelize.sync({ alter: true }).then(async () => {
     }
   
     app.use("/api/auth", authRoutes);
+
+    // protected routes
+    app.get(
+        "/api/test/admin",
+        authenticate,
+        authorizeRoles("ADMIN"),
+        (req, res) => {
+          res.json({ message: "Welcome Admin" });
+        }
+      );
 
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
