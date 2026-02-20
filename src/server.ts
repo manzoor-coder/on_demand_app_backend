@@ -1,5 +1,6 @@
 import './models/Role';
 import './models/User';
+import "./models/Service";
 import User from './models/User';
 import Role from "./models/Role";
 import bcrypt from "bcrypt";
@@ -10,9 +11,10 @@ import { sequelize } from "./config/db";
 
 import authRoutes from "./routes/authRoutes";
 
-// protected routes
 import { authenticate } from "./middlewares/authMiddleware";
 import { authorizeRoles } from "./middlewares/roleMiddleware";
+
+import serviceRoutes from "./routes/serviceRoutes";
 
 dotenv.config();
 
@@ -70,6 +72,9 @@ sequelize.sync({ alter: true }).then(async () => {
           res.json({ message: "Welcome Admin" });
         }
       );
+
+    //   services routes
+    app.use("/api/services", serviceRoutes);
 
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
