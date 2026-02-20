@@ -1,6 +1,8 @@
 import './models/Role';
 import './models/User';
 import "./models/Service";
+import "./models/Booking";
+
 import User from './models/User';
 import Role from "./models/Role";
 import bcrypt from "bcrypt";
@@ -9,12 +11,16 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { sequelize } from "./config/db";
 
+import { globalErrorHandler } from "./middlewares/errorMiddleware";
+
 import authRoutes from "./routes/authRoutes";
 
 import { authenticate } from "./middlewares/authMiddleware";
 import { authorizeRoles } from "./middlewares/roleMiddleware";
 
 import serviceRoutes from "./routes/serviceRoutes";
+
+import bookingRoutes from './routes/bookingRoutes'
 
 dotenv.config();
 
@@ -75,6 +81,12 @@ sequelize.sync({ alter: true }).then(async () => {
 
     //   services routes
     app.use("/api/services", serviceRoutes);
+
+    // booking routes
+    app.use("/api/bookings", bookingRoutes);
+
+
+    app.use(globalErrorHandler);
 
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
